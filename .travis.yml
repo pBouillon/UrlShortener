@@ -22,6 +22,7 @@ os:
 
 script:
   - dotnet restore Core/UrlShortener.sln
+  - dotnet test Core/UrlShortener.sln
   - dotnet build Core/UrlShortener.sln
 
 solution: Core/UrlShortener.sln
