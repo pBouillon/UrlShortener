@@ -8,13 +8,13 @@ using UrlShortener.Common.Contracts.Url;
 
 namespace UrlShortener.Api.Controllers
 {
-    [Route("url/long")]
+    [Route("url/short")]
     [ApiController]
     [Produces("application/json")]
-    public class LongUrlController : ControllerBase
+    public class ShortUrlController : ControllerBase
     {
-        [HttpPost("{longUrl}")]
-        public ActionResult<UrlDto> GenerateShortUrlFor([FromRoute] string longUrl)
+        [HttpGet("{shortUrl}")]
+        public ActionResult<UrlDto> GetLongUrlFor([FromRoute] string longUrl)
         {
             return Ok(new UrlDto
             {
