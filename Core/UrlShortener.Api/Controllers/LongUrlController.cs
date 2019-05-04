@@ -18,7 +18,7 @@ namespace UrlShortener.Api.Controllers
             _urlService = urlService;
         }
 
-        [HttpPost("{longUrl}")]
+        [HttpGet("{longUrl}")]
         [SwaggerResponse(200, "The long URL was successfully fetched", typeof(UrlDto))]
         [SwaggerResponse(400, "The short URL provided is invalid")]
         [SwaggerOperation(

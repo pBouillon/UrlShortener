@@ -2,6 +2,7 @@
 using Swashbuckle.AspNetCore.Annotations;
 using UrlShortener.Common.Contracts.Url;
 using UrlShortener.Common.Enums.Swagger;
+using UrlShortener.Service.Url;
 using UrlShortener.Service.Url.Interfaces;
 
 namespace UrlShortener.Api.Controllers
@@ -20,7 +21,6 @@ namespace UrlShortener.Api.Controllers
 
         [HttpGet("{shortUrl}")]
         [SwaggerResponse(200, "The shortened URL was successfully fetched", typeof(UrlDto))]
-        [SwaggerResponse(201, "The shortened URL was generated", typeof(UrlDto))]
         [SwaggerResponse(400, "The provided URL is invalid")]
         [SwaggerOperation(
             Summary = "Fetch the short URL for the long URL provided",
@@ -37,11 +37,18 @@ namespace UrlShortener.Api.Controllers
                 SwaggerParameter("Shortened url", Required = true)
             ] string shortUrl)
         {
-            return Ok(new UrlDto
+            UrlDto shortenUrl;
+
+            try
             {
-                LongUrl = "long url",
-                ShortUrl = shortUrl
-            });
+                shortenUrl = _urlService.GetLongUrlFor(shortUrl);
+            }
+            catch (InvalidRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return Ok(shortenUrl);
         }
     }
 }
