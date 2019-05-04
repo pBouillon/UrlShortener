@@ -19,17 +19,17 @@ namespace UrlShortener.Service.Url
         /// </summary>
         /// <param name="toHash"></param>
         /// <see cref="UrlGeneration.GeneratedSequenceLength"/>
-        /// <returns></returns>
+        /// <returns>A shorten sequence related to `toShorten`</returns>
         private string GetShortenString(string toShorten)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// TODO doc
+        /// Get the MD5 hash of a given string
         /// </summary>
-        /// <param name="toHash"></param>
-        /// <returns></returns>
+        /// <param name="toHash">The string to hash</param>
+        /// <returns>The MD5 hash of `toHash`</returns>
         private string GetMd5Hash(string toHash)
         {
             throw new NotImplementedException();
