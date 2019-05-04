@@ -50,6 +50,7 @@ namespace UrlShortener.Api
                         Url = _projectMeta.License.Url
                     }
                 });
+                c.EnableAnnotations();
             });
         }
 
