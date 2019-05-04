@@ -1,7 +1,9 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using System;
+using System.Net.Http;
 using UrlShortener.Service.Url;
+using UrlShortener.Service.Url.Exceptions;
 using Xunit;
 
 namespace UrlShortener.Tests.Services
@@ -20,7 +22,11 @@ namespace UrlShortener.Tests.Services
 
             actionPerformed
                 .Should()
-                .Throw<InvalidRequestException>("because no empty url should be accepted");
+                .Throw<HttpRequestException>()
+                .WithMessage(
+                    ExceptionMessages.BadUrlProvided, 
+                    "because no empty url should be accepted"
+                );
         }
 
         [Fact]
@@ -33,7 +39,11 @@ namespace UrlShortener.Tests.Services
 
             actionPerformed
                 .Should()
-                .Throw<InvalidRequestException>("because no empty url should be accepted");
+                .Throw<HttpRequestException>()
+                .WithMessage(
+                    ExceptionMessages.BadUrlProvided,
+                    "because no empty url should be accepted"
+                );
         }
     }
 }

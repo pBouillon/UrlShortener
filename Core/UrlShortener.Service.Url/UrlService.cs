@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Security.Cryptography;
 using UrlShortener.Common.Contracts.Url;
 using UrlShortener.Service.Url.Exceptions;
@@ -43,7 +44,7 @@ namespace UrlShortener.Service.Url
         {
             if (string.IsNullOrEmpty(shortUrl))
             {
-                throw new InvalidRequestException(ExceptionMessages.BadUrlProvided);
+                throw new HttpRequestException(ExceptionMessages.BadUrlProvided);
             }
 
             return new UrlDto
@@ -62,7 +63,7 @@ namespace UrlShortener.Service.Url
         {
             if (string.IsNullOrEmpty(longUrl))
             {
-                throw new InvalidRequestException(ExceptionMessages.BadUrlProvided);
+                throw new HttpRequestException(ExceptionMessages.BadUrlProvided);
             }
 
             return new UrlDto

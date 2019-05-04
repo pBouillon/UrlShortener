@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Net.Http;
 using UrlShortener.Common.Contracts.Url;
 using UrlShortener.Common.Enums.Swagger;
 using UrlShortener.Service.Url.Interfaces;
@@ -18,26 +19,37 @@ namespace UrlShortener.Api.Controllers
             _urlService = urlService;
         }
 
-        [HttpGet("{longUrl}")]
-        [SwaggerResponse(200, "The long URL was successfully fetched", typeof(UrlDto))]
-        [SwaggerResponse(400, "The short URL provided is invalid")]
+        [HttpGet("{shortUrl}")]
+        [SwaggerResponse(200, "The long url was successfully fetched", typeof(UrlDto))]
+        [SwaggerResponse(400, "The short url provided is invalid")]
         [SwaggerOperation(
-            Summary = "Fetch the long URL for the short URL provided",
-            Description = "If the short URL is not stored, throw an error",
-            OperationId = nameof(GetShortenedUrlFor),
+            Summary = "Fetch the long url for the short URL provided",
+            Description = "If the short url is not stored, throw an error",
+            OperationId = nameof(GetLongUrlFor),
             Tags = new[] 
             {
                 SwaggerTag.Url,
                 SwaggerTag.ShortUrl
             }
         )]
-        public ActionResult<UrlDto> GetShortenedUrlFor(
+        public ActionResult<UrlDto> GetLongUrlFor(
             [
                 FromRoute, 
                 SwaggerParameter("Url to convert", Required = true)
-            ] string longUrl)
+            ] string shortUrl)
         {
-            return Ok(_urlService.GetShortUrlFor(longUrl));
+            UrlDto longUrl;
+
+            try
+            {
+                longUrl = _urlService.GetLongUrlFor(shortUrl);
+            }
+            catch (HttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return Ok(longUrl);
         }
     }
 }
