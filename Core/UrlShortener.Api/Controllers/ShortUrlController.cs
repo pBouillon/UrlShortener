@@ -49,6 +49,10 @@ namespace UrlShortener.Api.Controllers
                 return BadRequest(e.Message);
             }
 
+            // TODO: find the correct way to do this (no hard coding)
+            shortenUrl.ShortUrl = $"http://{HttpContext.Request.Host.Value}/" +
+                $"url/long/{shortenUrl.ShortUrl}";
+
             return Ok(shortenUrl);
         }
     }

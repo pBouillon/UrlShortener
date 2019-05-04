@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using System.Security.Cryptography;
+using System.Text;
+using UrlShortener.Common.Constants.Url;
 using UrlShortener.Common.Contracts.Url;
 using UrlShortener.Service.Url.Exceptions;
 using UrlShortener.Service.Url.Interfaces;
@@ -22,7 +24,8 @@ namespace UrlShortener.Service.Url
         /// <returns>A shorten sequence related to `toShorten`</returns>
         private string GetShortenString(string toShorten)
         {
-            throw new NotImplementedException();
+            // TODO: add db storage / search
+            return GetMd5Hash(toShorten);
         }
 
         /// <summary>
@@ -32,7 +35,24 @@ namespace UrlShortener.Service.Url
         /// <returns>The MD5 hash of `toHash`</returns>
         private string GetMd5Hash(string toHash)
         {
-            throw new NotImplementedException();
+            var generated = new StringBuilder();
+
+            // Using the MD5 hashing algorithm
+            using (MD5 md5Hash = MD5.Create())
+            {
+                // Extracting the bytes resulting of the hashed string
+                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(toHash));
+
+                // Gathering `GeneratedSequenceLength` chars from it
+                for (int i = 0; i < UrlGeneration.GeneratedSequenceLength; ++i)
+                {
+                    // Converting byte to hexadecimal
+                    generated.Append(data[i].ToString("x2"));
+                }
+            }
+
+            // Returns the builded string
+            return generated.ToString();
         }
 
         /// <summary>
