@@ -2,6 +2,7 @@
 using Swashbuckle.AspNetCore.Annotations;
 using UrlShortener.Common.Contracts.Url;
 using UrlShortener.Common.Enums.Swagger;
+using UrlShortener.Service.Url.Interfaces;
 
 namespace UrlShortener.Api.Controllers
 {
@@ -10,6 +11,13 @@ namespace UrlShortener.Api.Controllers
     [Produces("application/json")]
     public class ShortUrlController : ControllerBase
     {
+        private readonly IUrlService _urlService;
+
+        public ShortUrlController(IUrlService urlService)
+        {
+            _urlService = urlService;
+        }
+
         [HttpGet("{shortUrl}")]
         [SwaggerResponse(200, "The shortened URL was successfully fetched", typeof(UrlDto))]
         [SwaggerResponse(201, "The shortened URL was generated", typeof(UrlDto))]

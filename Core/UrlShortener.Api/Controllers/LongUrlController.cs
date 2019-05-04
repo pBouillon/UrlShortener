@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
 using UrlShortener.Common.Contracts.Url;
 using UrlShortener.Common.Enums.Swagger;
+using UrlShortener.Service.Url.Interfaces;
 
 namespace UrlShortener.Api.Controllers
 {
@@ -11,6 +11,13 @@ namespace UrlShortener.Api.Controllers
     [Produces("application/json")]
     public class LongUrlController : ControllerBase
     {
+        private readonly IUrlService _urlService;
+
+        public LongUrlController(IUrlService urlService)
+        {
+            _urlService = urlService;
+        }
+
         [HttpPost("{longUrl}")]
         [SwaggerResponse(200, "The long URL was successfully fetched", typeof(UrlDto))]
         [SwaggerResponse(400, "The short URL provided is invalid")]
@@ -30,11 +37,7 @@ namespace UrlShortener.Api.Controllers
                 SwaggerParameter("Url to convert", Required = true)
             ] string longUrl)
         {
-            return Ok(new UrlDto
-            {
-                LongUrl = longUrl,
-                ShortUrl = "short url"
-            });
+            return Ok(_urlService.GetShortUrlFor(longUrl));
         }
     }
 }

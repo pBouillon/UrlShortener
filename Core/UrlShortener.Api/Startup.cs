@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using UrlShortener.Service.Url;
+using UrlShortener.Service.Url.Interfaces;
 
 namespace UrlShortener.Api
 {
@@ -52,6 +54,9 @@ namespace UrlShortener.Api
                 });
                 c.EnableAnnotations();
             });
+
+            // Dependency injection
+            services.AddScoped<IUrlService, UrlService> ();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
