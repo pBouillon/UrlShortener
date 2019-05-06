@@ -44,7 +44,7 @@ namespace UrlShortener.Service.Url
                 byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(toHash));
 
                 // Gathering `GeneratedSequenceLength` chars from it
-                for (int i = 0; i < UrlGeneration.GeneratedSequenceLength; ++i)
+                for (int i = 0; i < data.Length; ++i)
                 {
                     // Converting byte to hexadecimal
                     generated.Append(data[i].ToString("x2"));
@@ -52,7 +52,18 @@ namespace UrlShortener.Service.Url
             }
 
             // Returns the builded string
-            return generated.ToString();
+            return generated.ToString().Substring(0, UrlGeneration.GeneratedSequenceLength);
+        }
+
+        /// <summary>
+        /// Test the validity of an uri
+        /// </summary>
+        /// <param name="uri">uri to test</param>
+        /// <returns>true if valid</returns>
+        private bool IsValidUri(Uri uri)
+        {
+            return uri.Scheme == Uri.UriSchemeHttp
+                || uri.Scheme == Uri.UriSchemeHttps;
         }
 
         /// <summary>
@@ -82,6 +93,13 @@ namespace UrlShortener.Service.Url
         public UrlDto GetShortUrlFor(string longUrl)
         {
             if (string.IsNullOrEmpty(longUrl))
+            {
+                throw new HttpRequestException(ExceptionMessages.BadUrlProvided);
+            }
+
+            var convertedUrl = new Uri(longUrl, UriKind.Absolute);
+
+            if (!IsValidUri(convertedUrl))
             {
                 throw new HttpRequestException(ExceptionMessages.BadUrlProvided);
             }
