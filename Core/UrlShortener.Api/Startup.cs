@@ -12,12 +12,12 @@ namespace UrlShortener.Api
 {
     public class Startup
     {
-        private ProjectDto _projectMeta;
+        public readonly ProjectDto ProjectMeta;
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _projectMeta = new ProjectDto();
+            ProjectMeta = new ProjectDto();
         }
 
         public IConfiguration Configuration { get; }
@@ -27,29 +27,29 @@ namespace UrlShortener.Api
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // Load project's definition
-            Configuration.GetSection("Project").Bind(_projectMeta);
-            Configuration.GetSection("Project:Contact").Bind(_projectMeta.Contact);
-            Configuration.GetSection("Project:License").Bind(_projectMeta.License);
+            Configuration.GetSection("Project").Bind(ProjectMeta);
+            Configuration.GetSection("Project:Contact").Bind(ProjectMeta.Contact);
+            Configuration.GetSection("Project:License").Bind(ProjectMeta.License);
 
             // Populate swagger UI
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc(_projectMeta.ApiVersion, new Info
+                c.SwaggerDoc(ProjectMeta.ApiVersion, new Info
                 {
-                    Version = _projectMeta.Version,
-                    Title = _projectMeta.Title,
-                    Description = _projectMeta.Description,
-                    TermsOfService = _projectMeta.TermsOfService,
+                    Version = ProjectMeta.Version,
+                    Title = ProjectMeta.Title,
+                    Description = ProjectMeta.Description,
+                    TermsOfService = ProjectMeta.TermsOfService,
                     Contact = new Contact
                     {
-                        Name = _projectMeta.Contact.Name,
-                        Email = _projectMeta.Contact.Email,
-                        Url = _projectMeta.Contact.Url
+                        Name = ProjectMeta.Contact.Name,
+                        Email = ProjectMeta.Contact.Email,
+                        Url = ProjectMeta.Contact.Url
                     },
                     License = new License
                     {
-                        Name = _projectMeta.License.Name,
-                        Url = _projectMeta.License.Url
+                        Name = ProjectMeta.License.Name,
+                        Url = ProjectMeta.License.Url
                     }
                 });
                 c.EnableAnnotations();
@@ -78,7 +78,7 @@ namespace UrlShortener.Api
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", _projectMeta.Title);
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", ProjectMeta.Title);
                 c.RoutePrefix = string.Empty;
             });
         }

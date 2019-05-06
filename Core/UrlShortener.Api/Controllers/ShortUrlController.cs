@@ -20,36 +20,37 @@ namespace UrlShortener.Api.Controllers
             _urlService = urlService;
         }
 
-        [HttpGet("{longUrl}")]
-        [SwaggerResponse(200, "The shortened URL was successfully fetched", typeof(UrlDto))]
-        [SwaggerResponse(400, "The provided URL is invalid")]
+        [HttpGet("{shortUrl}")]
+        [SwaggerResponse(200, "The long url was successfully fetched", typeof(UrlDto))]
+        [SwaggerResponse(400, "The short url provided is invalid")]
         [SwaggerOperation(
-            Summary = "Fetch the short URL for the long URL provided",
-            Description = "If the long URL is not currently tracked, store it and generate a new short URL",
-            OperationId = nameof(GetShortenedUrlFor),
+            Summary = "Fetch the long url for the short URL provided",
+            Description = "If the short url is not stored, throw an error",
+            OperationId = nameof(GetLongUrlFor),
             Tags = new[]
             {
                 SwaggerTag.Url,
-                SwaggerTag.LongUrl
+                SwaggerTag.ShortUrl
             }
         )]
-        public ActionResult<UrlDto> GetShortenedUrlFor([
+        public ActionResult<UrlDto> GetLongUrlFor(
+            [
                 FromRoute,
                 SwaggerParameter("Url to convert", Required = true)
-            ] string longUrl)
+            ] string shortUrl)
         {
-            UrlDto shortenUrl;
+            UrlDto longUrl;
 
             try
             {
-                shortenUrl = _urlService.GetShortUrlFor(longUrl);
+                longUrl = _urlService.GetLongUrlFor(shortUrl);
             }
             catch (HttpRequestException e)
             {
                 return BadRequest(e.Message);
             }
 
-            return Ok(shortenUrl);
+            return Ok(longUrl);
         }
     }
 }
