@@ -1,3 +1,3 @@
-[![Build Status](https://travis-ci.com/pBouillon/UrlShortener.svg?branch=master)](https://travis-ci.com/pBouillon/UrlShortener)
+[![Build Status](https://travis-ci.com/pBouillon/UrlShortener.svg?token=yYHFDAqxEqdzLVhkUzC6&branch=master)](https://travis-ci.com/pBouillon/UrlShortener)
 
 # UrlShortener
