@@ -12,9 +12,17 @@ namespace UrlShortener.Service.Url
     public class UrlService : IUrlService
     {
         /// <summary>
+        /// TODO: doc
+        /// </summary>
+        private readonly IDal _dal;
+
+        /// <summary>
         /// Default constructor for the UrlService
         /// </summary>
-        public UrlService() { }
+        public UrlService()
+        { 
+            _dal = new Dal();
+        }
 
         /// <summary>
         /// Given a string, return a random sequence of a specific length
@@ -24,8 +32,19 @@ namespace UrlShortener.Service.Url
         /// <returns>A shorten sequence related to `toShorten`</returns>
         private string GetShortenString(string toShorten)
         {
-            // TODO: add db storage / search
-            return GetMd5Hash(toShorten);
+            string shortUrl;
+
+            if (!_dal.IsUrlStored(toShorten))
+            {
+                shortUrl = GetMd5Hash(toShorten);
+                _dal.StoreShortened(shortUrl, toShorten);
+            }
+            else
+            {
+                shortUrl = _dal.GetShortenedFor(toShorten);
+            }
+            
+            return shortUrl;
         }
 
         /// <summary>
