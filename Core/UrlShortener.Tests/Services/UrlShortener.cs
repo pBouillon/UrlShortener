@@ -44,8 +44,7 @@ namespace UrlShortener.Tests.Services
                 .Throw<HttpRequestException>()
                 .WithMessage(
                     ExceptionMessages.BadUrlProvided,
-                    "because no empty url should be accepted"
-                );
+                    "because no empty url should be accepted");
         }
 
         [Fact]
@@ -61,16 +60,14 @@ namespace UrlShortener.Tests.Services
                 .Should()
                 .Be(
                     tested,
-                    "because no treatment is done on the long url provided"
-                );
+                    "because no treatment is done on the long url provided");
 
             actual
                 .ShortUrl
                 .Should()
                 .HaveLength(
                     UrlGeneration.GeneratedSequenceLength,
-                    "because the shorten url should have a normalized size length"
-                );
+                    "because the shorten url should have a normalized size length");
         }
 
         [Fact]
@@ -86,16 +83,14 @@ namespace UrlShortener.Tests.Services
                 .Should()
                 .Be(
                     tested,
-                    "because no treatment is done on the long url provided"
-                );
+                    "because no treatment is done on the long url provided");
 
             actual
                 .ShortUrl
                 .Should()
                 .HaveLength(
                     UrlGeneration.GeneratedSequenceLength,
-                    "because the shorten url should have a normalized size length"
-                );
+                    "because the shorten url should have a normalized size length");
         }
 
         [Fact]
