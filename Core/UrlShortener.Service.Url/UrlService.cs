@@ -19,7 +19,7 @@ namespace UrlShortener.Service.Url
         /// <summary>
         /// Given a string, return a random sequence of a specific length
         /// </summary>
-        /// <param name="toHash"></param>
+        /// <param name="toShorten"></param>
         /// <see cref="UrlGeneration.GeneratedSequenceLength"/>
         /// <returns>A shorten sequence related to `toShorten`</returns>
         private string GetShortenString(string toShorten)
@@ -33,25 +33,25 @@ namespace UrlShortener.Service.Url
         /// </summary>
         /// <param name="toHash">The string to hash</param>
         /// <returns>The MD5 hash of `toHash`</returns>
-        private string GetMd5Hash(string toHash)
+        private static string GetMd5Hash(string toHash)
         {
             var generated = new StringBuilder();
 
             // Using the MD5 hashing algorithm
-            using (MD5 md5Hash = MD5.Create())
+            using (var md5Hash = MD5.Create())
             {
                 // Extracting the bytes resulting of the hashed string
-                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(toHash));
+                var encodedChain = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(toHash));
 
                 // Gathering `GeneratedSequenceLength` chars from it
-                for (int i = 0; i < data.Length; ++i)
+                foreach (var encodedChar in encodedChain)
                 {
                     // Converting byte to hexadecimal
-                    generated.Append(data[i].ToString("x2"));
+                    generated.Append(encodedChar.ToString("x2"));
                 }
             }
 
-            // Returns the builded string
+            // Returns the built string
             return generated.ToString().Substring(0, UrlGeneration.GeneratedSequenceLength);
         }
 
@@ -60,7 +60,7 @@ namespace UrlShortener.Service.Url
         /// </summary>
         /// <param name="uri">uri to test</param>
         /// <returns>true if valid</returns>
-        private bool IsValidUri(Uri uri)
+        private static bool IsValidUri(Uri uri)
         {
             return uri.Scheme == Uri.UriSchemeHttp
                 || uri.Scheme == Uri.UriSchemeHttps;
