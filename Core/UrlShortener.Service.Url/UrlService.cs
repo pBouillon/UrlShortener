@@ -37,7 +37,7 @@ namespace UrlShortener.Service.Url
             if (!_dal.IsUrlStored(toShorten))
             {
                 shortUrl = GetMd5Hash(toShorten);
-                _dal.StoreShortened(shortUrl, toShorten);
+                _dal.StoreShortened(toShorten, shortUrl);
             }
             else
             {
@@ -71,7 +71,9 @@ namespace UrlShortener.Service.Url
             }
 
             // Returns the built string
-            return generated.ToString().Substring(0, UrlGeneration.GeneratedSequenceLength);
+            return generated
+                .ToString()
+                .Substring(0, UrlGeneration.GeneratedSequenceLength);
         }
 
         /// <summary>

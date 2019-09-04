@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using System.Data;
+using NpgsqlTypes;
 using UrlShortener.Service.Url.Constants;
 using UrlShortener.Service.Url.Interfaces;
 
@@ -27,22 +28,27 @@ namespace UrlShortener.Service.Url
         {
             string shortened;
 
+            const string urlParam = "raw";
+
+            var query = $"SELECT {Database.Columns.ShortUrl} " +
+                        $"FROM {Database.TableName} " +
+                        $"WHERE {Database.Columns.LongUrl} LIKE @{urlParam};";
+
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
 
-                const string urlParam = "raw";
-
-                var query = "SELECT raw" +
-                            $"FROM {Database.TableName}" +
-                            $"WHERE {Database.Columns.LongUrl} LIKE @{urlParam};";
-
                 using (var command = new NpgsqlCommand(query, connection))
                 {
+                    command.Connection = connection;
+
+                    command.CommandText = query;
                     command.Parameters.AddWithValue(urlParam, originUrl);
 
                     using (var reader = command.ExecuteReader(CommandBehavior.SingleRow))
                     {
+                        reader.Read();
+
                         shortened = (string) reader[0];
                     }
                 }
@@ -60,19 +66,22 @@ namespace UrlShortener.Service.Url
         {
             long records;
 
+            const string urlParam = "raw";
+
+            var query = "SELECT COUNT(*) " +
+                        $"FROM {Database.TableName} " +
+                        $"WHERE {Database.Columns.LongUrl} LIKE @{urlParam};";
+
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
 
-                const string urlParam = "raw";
-
-                var query = "SELECT COUNT(*) " +
-                            $"FROM {Database.TableName} " +
-                            $"WHERE {Database.Columns.LongUrl} LIKE @{urlParam};";
-
-                using (var command = new NpgsqlCommand(query, connection))
+                using (var command = new NpgsqlCommand())
                 {
-                    command.Parameters.AddWithValue(urlParam, originUrl);
+                    command.Connection = connection;
+
+                    command.CommandText = query;
+                    command.Parameters.AddWithValue(urlParam, NpgsqlDbType.Varchar, originUrl);
 
                     // ReSharper disable once PossibleNullReferenceException
                     records = (long) command.ExecuteScalar();
@@ -89,19 +98,22 @@ namespace UrlShortener.Service.Url
         /// <param name="shortened"></param>
         public void StoreShortened(string originUrl, string shortened)
         {
+            const string shortParam = "shortened";
+            const string urlParam = "raw";
+
+            var query = $"INSERT INTO {Database.TableName} " +
+                        $"({Database.Columns.LongUrl}, {Database.Columns.ShortUrl})" +
+                        $"VALUES (@{urlParam}, @{shortParam});";
+
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
 
-                const string shortParam = "shortened";
-                const string urlParam = "raw";
-
-                var query = $"INSERT INTO {Database.TableName} " +
-                            $"({Database.Columns.LongUrl}, {Database.Columns.ShortUrl})" +
-                            $"VALUES (@{urlParam}, @{shortParam});";
-
-                using (var command = new NpgsqlCommand(query, connection))
+                using (var command = new NpgsqlCommand())
                 {
+                    command.Connection = connection;
+
+                    command.CommandText = query;
                     command.Parameters.AddWithValue(shortParam, shortened);
                     command.Parameters.AddWithValue(urlParam, originUrl);
 
