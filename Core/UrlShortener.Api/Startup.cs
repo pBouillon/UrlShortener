@@ -57,6 +57,7 @@ namespace UrlShortener.Api
 
             // Dependency injection
             services.AddScoped<IUrlService, UrlService> ();
+            services.AddScoped<IDal, Dal>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

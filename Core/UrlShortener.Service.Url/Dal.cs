@@ -1,5 +1,4 @@
 ﻿using Npgsql;
-using System;
 using System.Data;
 using UrlShortener.Service.Url.Constants;
 using UrlShortener.Service.Url.Interfaces;

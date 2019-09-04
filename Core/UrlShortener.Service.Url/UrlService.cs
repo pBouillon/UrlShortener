@@ -19,9 +19,9 @@ namespace UrlShortener.Service.Url
         /// <summary>
         /// Default constructor for the UrlService
         /// </summary>
-        public UrlService()
+        public UrlService(IDal dal)
         { 
-            _dal = new Dal();
+            _dal = dal;
         }
 
         /// <summary>
