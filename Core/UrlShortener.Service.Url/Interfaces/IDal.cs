@@ -32,7 +32,7 @@
         /// </summary>
         /// <param name="shortUrl">The short URL's code</param>
         /// <returns>True if stored; false otherwise</returns>
-        bool IsShortUrlStored(string shortUrl);
+        bool IsShortCodeStored(string shortUrl);
 
         /// <summary>
         /// Store the original URL and its associated short code
