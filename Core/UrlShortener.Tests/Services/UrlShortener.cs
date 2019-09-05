@@ -1,11 +1,11 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using Moq;
 using System;
 using System.Net.Http;
 using UrlShortener.Common.Constants.Url;
-using UrlShortener.Common.Contracts.Url;
 using UrlShortener.Service.Url;
-using UrlShortener.Service.Url.Exceptions;
+using UrlShortener.Tests.Mocks;
 using Xunit;
 
 namespace UrlShortener.Tests.Services
@@ -15,115 +15,167 @@ namespace UrlShortener.Tests.Services
         private readonly Fixture _fixture = new Fixture();
 
         [Fact]
-        public void GetLongUrlFor_Invalid_EmptyUrl()
+        public void GetLongUrlFor_EmptyUrl()
         {
+            // Arrange
             var tested = string.Empty;
-            var service = new UrlService();
 
-            Action actionPerformed = () => service.GetLongUrlFor(tested);
+            var mockedDal = new MockedDal();
+            var service = new UrlService(mockedDal.GetObject);
 
+            // Act
+            Action actionPerformed = () 
+                => service.GetLongUrlFor(tested);
+
+            // Assert
             actionPerformed
                 .Should()
                 .Throw<HttpRequestException>()
                 .WithMessage(
                     ExceptionMessages.BadUrlProvided, 
-                    "because no empty url should be accepted"
-                );
+                    "because no empty url should be accepted");
         }
 
         [Fact]
-        public void GetShortUrlFor_Invalid_EmptyUrl()
+        public void GetShortUrlFor_EmptyUrl()
         {
+            // Arrange
             var tested = string.Empty;
-            var service = new UrlService();
 
-            Action actionPerformed = () => service.GetShortUrlFor(tested);
+            var mockedDal = new MockedDal();
+            var service = new UrlService(mockedDal.GetObject);
 
+            // Act
+            Action actionPerformed = () 
+                => service.GetShortUrlFor(tested);
+
+            // Assert
             actionPerformed
                 .Should()
                 .Throw<HttpRequestException>()
                 .WithMessage(
                     ExceptionMessages.BadUrlProvided,
-                    "because no empty url should be accepted"
-                );
+                    "because no empty url should be accepted");
         }
 
         [Fact]
-        public void GetShortUrlFor_Valid_Http()
+        public void GetShortUrlFor_Http()
         {
+            // Arrange
             var tested = $"http://{_fixture.Create<string>()}";
-            var service = new UrlService();
 
+            var mockedDal = new MockedDal();
+            var service = new UrlService(mockedDal.GetObject);
+
+            // Act
             var actual = service.GetShortUrlFor(tested);
 
+            // Assert
             actual
                 .LongUrl
                 .Should()
                 .Be(
                     tested,
-                    "because no treatment is done on the long url provided"
-                );
+                    "because no treatment is done on the long url provided");
 
             actual
                 .ShortUrl
                 .Should()
                 .HaveLength(
                     UrlGeneration.GeneratedSequenceLength,
-                    "because the shorten url should have a normalized size length"
-                );
+                    "because the shorten url should have a normalized size length");
         }
 
         [Fact]
-        public void GetShortUrlFor_Valid_Https()
+        public void GetShortUrlFor_Https()
         {
+            // Arrange
             var tested = $"https://{_fixture.Create<string>()}";
-            var service = new UrlService();
 
+            var mockedDal = new MockedDal();
+            var service = new UrlService(mockedDal.GetObject);
+
+            // Act
             var actual = service.GetShortUrlFor(tested);
 
+            // Assert
             actual
                 .LongUrl
                 .Should()
                 .Be(
                     tested,
-                    "because no treatment is done on the long url provided"
-                );
+                    "because no treatment is done on the long url provided");
 
             actual
                 .ShortUrl
                 .Should()
                 .HaveLength(
                     UrlGeneration.GeneratedSequenceLength,
-                    "because the shorten url should have a normalized size length"
-                );
+                    "because the shorten url should have a normalized size length");
         }
 
         [Fact]
-        public void GetShortUrlFor_Valid_EnsureHttpImmutability()
+        public void GetShortUrlFor_UrlAlreadyStored()
         {
+            // Arrange
             var tested = $"http://{_fixture.Create<string>()}";
-            var service = new UrlService();
 
-            var expected = service.GetShortUrlFor(tested);
-            var actual = service.GetShortUrlFor(tested);
+            var mockedDal = new MockedDal(
+                isUrlStored: true,
+                getShortenedUrlFor: tested);
 
-            actual
-                .Should()
-                .Match<UrlDto>(t => t.ShortUrl == expected.ShortUrl);
+            var service = new UrlService(mockedDal.GetObject);
+
+            // Act
+            service.GetShortUrlFor(tested);
+
+            // Assert
+            mockedDal.GetMock
+                .Verify(_ =>
+                    _.GetShortenedFor(It.IsAny<string>()),
+                    Times.Once);
+
+            mockedDal.GetMock
+                .Verify(_ =>
+                    _.IsUrlStored(It.IsAny<string>()),
+                    Times.Once);
+
+            mockedDal.GetMock
+                .Verify(_ =>
+                    _.StoreShortened(It.IsAny<string>(), It.IsAny<string>()),
+                    Times.Never);
         }
 
         [Fact]
-        public void GetShortUrlFor_Valid_EnsureHttpsImmutability()
+        public void GetShortUrlFor_UrlNotStored()
         {
-            var tested = $"https://{_fixture.Create<string>()}";
-            var service = new UrlService();
+            // Arrange
+            var tested = $"http://{_fixture.Create<string>()}";
 
-            var expected = service.GetShortUrlFor(tested);
-            var actual = service.GetShortUrlFor(tested);
+            var mockedDal = new MockedDal(
+                isUrlStored: false,
+                getShortenedUrlFor: tested);
 
-            actual
-                .Should()
-                .Match<UrlDto>(t => t.ShortUrl == expected.ShortUrl);
+            var service = new UrlService(mockedDal.GetObject);
+
+            // Act
+            service.GetShortUrlFor(tested);
+
+            // Assert
+            mockedDal.GetMock
+                .Verify(_ =>
+                    _.GetShortenedFor(It.IsAny<string>()),
+                    Times.Never);
+
+            mockedDal.GetMock
+                .Verify(_ =>
+                    _.IsUrlStored(It.IsAny<string>()),
+                    Times.Once);
+
+            mockedDal.GetMock
+                .Verify(_ =>
+                    _.StoreShortened(It.IsAny<string>(), It.IsAny<string>()),
+                    Times.Once);
         }
     }
 }

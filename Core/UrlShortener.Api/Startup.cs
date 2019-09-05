@@ -1,10 +1,10 @@
-﻿using Blog.Common.Contracts.Configuration;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using UrlShortener.Common.Contracts.Configuration;
 using UrlShortener.Service.Url;
 using UrlShortener.Service.Url.Interfaces;
 
@@ -57,6 +57,7 @@ namespace UrlShortener.Api
 
             // Dependency injection
             services.AddScoped<IUrlService, UrlService> ();
+            services.AddScoped<IDal, Dal>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

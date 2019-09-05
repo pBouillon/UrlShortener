@@ -3,7 +3,6 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Net.Http;
 using UrlShortener.Common.Contracts.Url;
 using UrlShortener.Common.Enums.Swagger;
-using UrlShortener.Service.Url;
 using UrlShortener.Service.Url.Interfaces;
 
 namespace UrlShortener.Api.Controllers
