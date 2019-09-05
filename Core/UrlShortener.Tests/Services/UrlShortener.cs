@@ -5,7 +5,6 @@ using System;
 using System.Net.Http;
 using UrlShortener.Common.Constants.Url;
 using UrlShortener.Service.Url;
-using UrlShortener.Service.Url.Exceptions;
 using UrlShortener.Tests.Mocks;
 using Xunit;
 
@@ -16,7 +15,7 @@ namespace UrlShortener.Tests.Services
         private readonly Fixture _fixture = new Fixture();
 
         [Fact]
-        public void GetLongUrlFor_Invalid_EmptyUrl()
+        public void GetLongUrlFor_EmptyUrl()
         {
             // Arrange
             var tested = string.Empty;
@@ -34,12 +33,11 @@ namespace UrlShortener.Tests.Services
                 .Throw<HttpRequestException>()
                 .WithMessage(
                     ExceptionMessages.BadUrlProvided, 
-                    "because no empty url should be accepted"
-                );
+                    "because no empty url should be accepted");
         }
 
         [Fact]
-        public void GetShortUrlFor_Invalid_EmptyUrl()
+        public void GetShortUrlFor_EmptyUrl()
         {
             // Arrange
             var tested = string.Empty;
@@ -61,7 +59,7 @@ namespace UrlShortener.Tests.Services
         }
 
         [Fact]
-        public void GetShortUrlFor_Valid_Http()
+        public void GetShortUrlFor_Http()
         {
             // Arrange
             var tested = $"http://{_fixture.Create<string>()}";
@@ -89,7 +87,7 @@ namespace UrlShortener.Tests.Services
         }
 
         [Fact]
-        public void GetShortUrlFor_Valid_Https()
+        public void GetShortUrlFor_Https()
         {
             // Arrange
             var tested = $"https://{_fixture.Create<string>()}";
@@ -117,7 +115,39 @@ namespace UrlShortener.Tests.Services
         }
 
         [Fact]
-        public void GetShortUrlFor_Valid_EnsureWorkFlow_NotStored()
+        public void GetShortUrlFor_UrlAlreadyStored()
+        {
+            // Arrange
+            var tested = $"http://{_fixture.Create<string>()}";
+
+            var mockedDal = new MockedDal(
+                isUrlStored: true,
+                getShortenedUrlFor: tested);
+
+            var service = new UrlService(mockedDal.GetObject);
+
+            // Act
+            service.GetShortUrlFor(tested);
+
+            // Assert
+            mockedDal.GetMock
+                .Verify(_ =>
+                    _.GetShortenedFor(It.IsAny<string>()),
+                    Times.Once);
+
+            mockedDal.GetMock
+                .Verify(_ =>
+                    _.IsUrlStored(It.IsAny<string>()),
+                    Times.Once);
+
+            mockedDal.GetMock
+                .Verify(_ =>
+                    _.StoreShortened(It.IsAny<string>(), It.IsAny<string>()),
+                    Times.Never);
+        }
+
+        [Fact]
+        public void GetShortUrlFor_UrlNotStored()
         {
             // Arrange
             var tested = $"http://{_fixture.Create<string>()}";
@@ -138,46 +168,14 @@ namespace UrlShortener.Tests.Services
                     Times.Never);
 
             mockedDal.GetMock
-                .Verify(_ => 
-                    _.IsUrlStored(It.IsAny<string>()), 
-                    Times.Once);
-
-            mockedDal.GetMock
-                .Verify(_ => 
-                    _.StoreShortened(It.IsAny<string>(), It.IsAny<string>()), 
-                    Times.Once);
-        }
-
-        [Fact]
-        public void GetShortUrlFor_Valid_EnsureWorkFlow_AlreadyStored()
-        {
-            // Arrange
-            var tested = $"http://{_fixture.Create<string>()}";
-
-            var mockedDal = new MockedDal(
-                isUrlStored: true,
-                getShortenedUrlFor: tested);
-
-            var service = new UrlService(mockedDal.GetObject);
-
-            // Act
-            service.GetShortUrlFor(tested);
-
-            // Assert
-            mockedDal.GetMock
                 .Verify(_ =>
-                        _.GetShortenedFor(It.IsAny<string>()),
+                    _.IsUrlStored(It.IsAny<string>()),
                     Times.Once);
 
             mockedDal.GetMock
                 .Verify(_ =>
-                        _.IsUrlStored(It.IsAny<string>()),
+                    _.StoreShortened(It.IsAny<string>(), It.IsAny<string>()),
                     Times.Once);
-
-            mockedDal.GetMock
-                .Verify(_ =>
-                        _.StoreShortened(It.IsAny<string>(), It.IsAny<string>()),
-                    Times.Never);
         }
     }
 }

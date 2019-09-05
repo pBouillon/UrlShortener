@@ -20,6 +20,44 @@ namespace UrlShortener.Service.Url
         }
 
         /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="shortUrl"></param>
+        /// <returns></returns>
+        public string GetOriginalFrom(string shortUrl)
+        {
+            string original;
+
+            const string shortParam = "short";
+
+            var query = $"SELECT {Database.Columns.LongUrl} " +
+                        $"FROM {Database.TableName} " +
+                        $"WHERE {Database.Columns.ShortUrl} LIKE @{shortParam};";
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (var command = new NpgsqlCommand(query, connection))
+                {
+                    command.Connection = connection;
+
+                    command.CommandText = query;
+                    command.Parameters.AddWithValue(shortParam, shortUrl);
+
+                    using (var reader = command.ExecuteReader(CommandBehavior.SingleRow))
+                    {
+                        reader.Read();
+
+                        original = (string)reader[0];
+                    }
+                }
+            }
+
+            return original;
+        }
+
+        /// <summary>
         /// TODO: doc
         /// </summary>
         /// <param name="originUrl"></param>
@@ -85,6 +123,40 @@ namespace UrlShortener.Service.Url
 
                     // ReSharper disable once PossibleNullReferenceException
                     records = (long) command.ExecuteScalar();
+                }
+            }
+
+            return records != 0;
+        }
+
+        /// <summary>
+        /// TODO: doc
+        /// </summary>
+        /// <param name="shortUrl"></param>
+        /// <returns></returns>
+        public bool IsShortUrlStored(string shortUrl)
+        {
+            long records;
+
+            const string urlParam = "short";
+
+            var query = "SELECT COUNT(*) " +
+                        $"FROM {Database.TableName} " +
+                        $"WHERE {Database.Columns.ShortUrl} LIKE @{urlParam};";
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (var command = new NpgsqlCommand())
+                {
+                    command.Connection = connection;
+
+                    command.CommandText = query;
+                    command.Parameters.AddWithValue(urlParam, NpgsqlDbType.Varchar, shortUrl);
+
+                    // ReSharper disable once PossibleNullReferenceException
+                    records = (long)command.ExecuteScalar();
                 }
             }
 

@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrlShortener.Api", "UrlShor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrlShortener.Common", "UrlShortener.Common\UrlShortener.Common.csproj", "{BA4DC501-A923-42A7-957A-AB789E8AB9F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Service.Url", "UrlShortener.Service.Url\UrlShortener.Service.Url.csproj", "{7DCD83E5-063E-40A8-8256-F55E034DD486}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrlShortener.Service.Url", "UrlShortener.Service.Url\UrlShortener.Service.Url.csproj", "{7DCD83E5-063E-40A8-8256-F55E034DD486}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Tests", "UrlShortener.Tests\UrlShortener.Tests.csproj", "{560D8D1E-8D66-4501-BD9F-A08C5806EB01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrlShortener.Tests", "UrlShortener.Tests\UrlShortener.Tests.csproj", "{560D8D1E-8D66-4501-BD9F-A08C5806EB01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

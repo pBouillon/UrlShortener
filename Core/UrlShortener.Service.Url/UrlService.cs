@@ -4,7 +4,6 @@ using System.Security.Cryptography;
 using System.Text;
 using UrlShortener.Common.Constants.Url;
 using UrlShortener.Common.Contracts.Url;
-using UrlShortener.Service.Url.Exceptions;
 using UrlShortener.Service.Url.Interfaces;
 
 namespace UrlShortener.Service.Url
@@ -99,9 +98,14 @@ namespace UrlShortener.Service.Url
                 throw new HttpRequestException(ExceptionMessages.BadUrlProvided);
             }
 
+            if (!_dal.IsShortUrlStored(shortUrl))
+            {
+                throw new HttpRequestException(ExceptionMessages.UnknownShortUrl);
+            }
+
             return new UrlDto
             {
-                LongUrl = "Associated long url",
+                LongUrl = _dal.GetOriginalFrom(shortUrl),
                 ShortUrl = shortUrl
             };
         }
