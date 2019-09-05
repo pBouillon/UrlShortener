@@ -1,4 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/**
+ * Author
+ *      Pierre Bouillon - https://github.com/pBouillon
+ *
+ * Repository
+ *      UrlShortener - https://github.com/pBouillon/UrlShortener
+ *
+ * License
+ *      MIT - https://github.com/pBouillon/UrlShortener/blob/master/LICENSE
+ */
+
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net.Http;
 using UrlShortener.Common.Constants.Routes;

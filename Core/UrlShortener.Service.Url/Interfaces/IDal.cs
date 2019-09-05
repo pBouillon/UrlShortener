@@ -1,4 +1,15 @@
-﻿namespace UrlShortener.Service.Url.Interfaces
+﻿/**
+ * Author
+ *      Pierre Bouillon - https://github.com/pBouillon
+ *
+ * Repository
+ *      UrlShortener - https://github.com/pBouillon/UrlShortener
+ *
+ * License
+ *      MIT - https://github.com/pBouillon/UrlShortener/blob/master/LICENSE
+ */
+
+namespace UrlShortener.Service.Url.Interfaces
 {
     /// <summary>
     /// References the data access layer's contract

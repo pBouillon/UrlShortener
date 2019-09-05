@@ -1,4 +1,15 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿/**
+ * Author
+ *      Pierre Bouillon - https://github.com/pBouillon
+ *
+ * Repository
+ *      UrlShortener - https://github.com/pBouillon/UrlShortener
+ *
+ * License
+ *      MIT - https://github.com/pBouillon/UrlShortener/blob/master/LICENSE
+ */
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
