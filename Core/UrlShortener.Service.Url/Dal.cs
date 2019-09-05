@@ -1,15 +1,26 @@
 ﻿using Npgsql;
-using System.Data;
 using NpgsqlTypes;
+using System.Data;
 using UrlShortener.Service.Url.Constants;
 using UrlShortener.Service.Url.Interfaces;
 
 namespace UrlShortener.Service.Url
 {
+    /// <summary>
+    /// References the concrete implementation of the data access layer
+    /// </summary>
     public class Dal : IDal
     {
+        /// <summary>
+        /// Connection string to the database
+        /// </summary>
+        /// <see cref="Database"/>
         private readonly string _connectionString;
 
+        /// <summary>
+        /// Default constructor
+        /// Build the connection string
+        /// </summary>
         public Dal()
         {
             _connectionString = $"Host={Database.Host};" +
@@ -19,11 +30,12 @@ namespace UrlShortener.Service.Url
                                 $"Database={Database.DatabaseName}";
         }
 
+        /// <inheritdoc/>
         /// <summary>
-        /// TODO
+        /// Get the original URL from its shortened version
         /// </summary>
-        /// <param name="shortUrl"></param>
-        /// <returns></returns>
+        /// <param name="shortUrl">The short URL's code</param>
+        /// <returns>The original URL</returns>
         public string GetOriginalFrom(string shortUrl)
         {
             string original;
@@ -57,11 +69,12 @@ namespace UrlShortener.Service.Url
             return original;
         }
 
+        /// <inheritdoc/>
         /// <summary>
-        /// TODO: doc
+        /// Get the shortened URL from its long version
         /// </summary>
-        /// <param name="originUrl"></param>
-        /// <returns></returns>
+        /// <param name="originUrl">The original URL</param>
+        /// <returns>The shortened URL code</returns>
         public string GetShortenedFor(string originUrl)
         {
             string shortened;
@@ -95,11 +108,12 @@ namespace UrlShortener.Service.Url
             return shortened;
         }
 
+        /// <inheritdoc/>
         /// <summary>
-        /// TODO: doc
+        /// Check if the original URL is currently tracked by the system
         /// </summary>
-        /// <param name="originUrl"></param>
-        /// <returns></returns>
+        /// <param name="originUrl">Original URL to check</param>
+        /// <returns>True if stored; false otherwise</returns>
         public bool IsUrlStored(string originUrl)
         {
             long records;
@@ -129,12 +143,13 @@ namespace UrlShortener.Service.Url
             return records != 0;
         }
 
+        /// <inheritdoc/>
         /// <summary>
-        /// TODO: doc
+        /// Check if the shortened URL code is currently stored in the database
         /// </summary>
-        /// <param name="shortUrl"></param>
-        /// <returns></returns>
-        public bool IsShortUrlStored(string shortUrl)
+        /// <param name="shortUrl">The short URL's code</param>
+        /// <returns>True if stored; false otherwise</returns>
+        public bool IsShortCodeStored(string shortUrl)
         {
             long records;
 
@@ -163,11 +178,12 @@ namespace UrlShortener.Service.Url
             return records != 0;
         }
 
+        /// <inheritdoc/>
         /// <summary>
-        /// TODO: doc
+        /// Store the original URL and its associated short code
         /// </summary>
-        /// <param name="originUrl"></param>
-        /// <param name="shortened"></param>
+        /// <param name="originUrl">Original URL</param>
+        /// <param name="shortened">Associated short code</param>
         public void StoreShortened(string originUrl, string shortened)
         {
             const string shortParam = "shortened";

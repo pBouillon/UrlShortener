@@ -8,10 +8,13 @@ using UrlShortener.Service.Url.Interfaces;
 
 namespace UrlShortener.Service.Url
 {
+    /// <summary>
+    /// References the concrete implementation of URL service
+    /// </summary>
     public class UrlService : IUrlService
     {
         /// <summary>
-        /// TODO: doc
+        /// Data access layer to reach the database
         /// </summary>
         private readonly IDal _dal;
 
@@ -93,12 +96,14 @@ namespace UrlShortener.Service.Url
         /// <returns>The long url in a `UrlDto`</returns>
         public UrlDto GetLongUrlFor(string shortUrl)
         {
+            // Check if the string contains data
             if (string.IsNullOrEmpty(shortUrl))
             {
                 throw new HttpRequestException(ExceptionMessages.BadUrlProvided);
             }
 
-            if (!_dal.IsShortUrlStored(shortUrl))
+            // Check if the code is tracked by the system
+            if (!_dal.IsShortCodeStored(shortUrl))
             {
                 throw new HttpRequestException(ExceptionMessages.UnknownShortUrl);
             }
@@ -117,13 +122,16 @@ namespace UrlShortener.Service.Url
         /// <returns>The short url in a `UrlDto`</returns>
         public UrlDto GetShortUrlFor(string longUrl)
         {
+            // Check if the string contains data
             if (string.IsNullOrEmpty(longUrl))
             {
                 throw new HttpRequestException(ExceptionMessages.BadUrlProvided);
             }
 
+            // Fetch the URI of the provided URL
             var convertedUrl = new Uri(longUrl, UriKind.Absolute);
 
+            // Check if the URL is a valid one
             if (!IsValidUri(convertedUrl))
             {
                 throw new HttpRequestException(ExceptionMessages.BadUrlProvided);

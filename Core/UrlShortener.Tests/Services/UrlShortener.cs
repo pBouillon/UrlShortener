@@ -4,6 +4,7 @@ using Moq;
 using System;
 using System.Net.Http;
 using UrlShortener.Common.Constants.Url;
+using UrlShortener.Common.Contracts.Url;
 using UrlShortener.Service.Url;
 using UrlShortener.Tests.Mocks;
 using Xunit;
@@ -15,7 +16,7 @@ namespace UrlShortener.Tests.Services
         private readonly Fixture _fixture = new Fixture();
 
         [Fact]
-        public void GetLongUrlFor_EmptyUrl()
+        public void GetLongUrlFor_EmptyCode()
         {
             // Arrange
             var tested = string.Empty;
@@ -34,6 +35,55 @@ namespace UrlShortener.Tests.Services
                 .WithMessage(
                     ExceptionMessages.BadUrlProvided, 
                     "because no empty url should be accepted");
+        }
+
+        [Fact]
+        public void GetLongUrlFor_NonStoredCode()
+        {
+            // Arrange
+            var tested = _fixture.Create<string>();
+
+            var mockedDal = new MockedDal();
+            var service = new UrlService(mockedDal.GetObject);
+
+            // Act
+            Action actionPerformed = ()
+                => service.GetLongUrlFor(tested);
+
+            // Assert
+            actionPerformed
+                .Should()
+                .Throw<HttpRequestException>()
+                .WithMessage(
+                    ExceptionMessages.UnknownShortUrl,
+                    "because requesting a non-existing code should raise an exception");
+        }
+
+        [Fact]
+        public void GetLongUrlFor_ValidCode()
+        {
+            // Arrange
+            var urlDto = new UrlDto
+            {
+                LongUrl = _fixture.Create<string>(),
+                ShortUrl = _fixture.Create<string>()
+            };
+
+            var mockedDal = new MockedDal(
+                isShortCodeStored: true,
+                getOriginalFor: urlDto.LongUrl);
+
+            var service = new UrlService(mockedDal.GetObject);
+
+            // Act
+            var response = service.GetLongUrlFor(urlDto.ShortUrl);
+
+            // Assert
+            response
+                .Should()
+                .BeEquivalentTo(
+                    urlDto,
+                    "because the same long URL is returned by the program when using its code");
         }
 
         [Fact]
@@ -118,18 +168,28 @@ namespace UrlShortener.Tests.Services
         public void GetShortUrlFor_UrlAlreadyStored()
         {
             // Arrange
-            var tested = $"http://{_fixture.Create<string>()}";
+            var urlDto = new UrlDto
+            {
+                LongUrl = $"http://{_fixture.Create<string>()}",
+                ShortUrl = _fixture.Create<string>()
+            };
 
             var mockedDal = new MockedDal(
                 isUrlStored: true,
-                getShortenedUrlFor: tested);
+                getShortenedUrlFor: urlDto.ShortUrl);
 
             var service = new UrlService(mockedDal.GetObject);
 
             // Act
-            service.GetShortUrlFor(tested);
+            var response = service.GetShortUrlFor(urlDto.LongUrl);
 
             // Assert
+            response
+                .Should()
+                .BeEquivalentTo(
+                    urlDto,
+                    "because the fetched values should match the original ones");
+
             mockedDal.GetMock
                 .Verify(_ =>
                     _.GetShortenedFor(It.IsAny<string>()),
@@ -150,16 +210,20 @@ namespace UrlShortener.Tests.Services
         public void GetShortUrlFor_UrlNotStored()
         {
             // Arrange
-            var tested = $"http://{_fixture.Create<string>()}";
+            var urlDto = new UrlDto
+            {
+                LongUrl = $"http://{_fixture.Create<string>()}",
+                ShortUrl = string.Empty
+            };
 
             var mockedDal = new MockedDal(
                 isUrlStored: false,
-                getShortenedUrlFor: tested);
+                getShortenedUrlFor: urlDto.ShortUrl);
 
             var service = new UrlService(mockedDal.GetObject);
 
             // Act
-            service.GetShortUrlFor(tested);
+            service.GetShortUrlFor(urlDto.LongUrl);
 
             // Assert
             mockedDal.GetMock

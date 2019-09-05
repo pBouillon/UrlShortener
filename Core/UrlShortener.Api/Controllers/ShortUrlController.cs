@@ -1,19 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net.Http;
+using UrlShortener.Common.Constants.Routes;
+using UrlShortener.Common.Constants.Swagger;
 using UrlShortener.Common.Contracts.Url;
-using UrlShortener.Common.Enums.Swagger;
 using UrlShortener.Service.Url.Interfaces;
 
 namespace UrlShortener.Api.Controllers
 {
-    [Route("url/short")]
+    /// <summary>
+    /// References the controller used for the conversion of short URL to long ones
+    /// </summary>
+    [Route(Routes.ShortToLong)]
     [ApiController]
     [Produces("application/json")]
     public class ShortUrlController : ControllerBase
     {
+        /// <summary>
+        /// Url service used for URL conversions
+        /// </summary>
         private readonly IUrlService _urlService;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="urlService">Url service used for URL conversions</param>
         public ShortUrlController(IUrlService urlService)
         {
             _urlService = urlService;
@@ -44,6 +55,7 @@ namespace UrlShortener.Api.Controllers
             {
                 longUrl = _urlService.GetLongUrlFor(shortUrl);
             }
+            // Any error occuring would result in an error 400
             catch (HttpRequestException e)
             {
                 return BadRequest(e.Message);
