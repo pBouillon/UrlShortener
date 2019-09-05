@@ -1,4 +1,15 @@
-﻿using AutoFixture;
+﻿/**
+ * Author
+ *      Pierre Bouillon - https://github.com/pBouillon
+ *
+ * Repository
+ *      UrlShortener - https://github.com/pBouillon/UrlShortener
+ *
+ * License
+ *      MIT - https://github.com/pBouillon/UrlShortener/blob/master/LICENSE
+ */
+
+using AutoFixture;
 using FluentAssertions;
 using Moq;
 using System;

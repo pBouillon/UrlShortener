@@ -1,4 +1,15 @@
-﻿using System;
+﻿/**
+ * Author
+ *      Pierre Bouillon - https://github.com/pBouillon
+ *
+ * Repository
+ *      UrlShortener - https://github.com/pBouillon/UrlShortener
+ *
+ * License
+ *      MIT - https://github.com/pBouillon/UrlShortener/blob/master/LICENSE
+ */
+
+using System;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;

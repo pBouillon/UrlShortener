@@ -1,4 +1,15 @@
-﻿namespace UrlShortener.Common.Constants.Swagger
+﻿/**
+ * Author
+ *      Pierre Bouillon - https://github.com/pBouillon
+ *
+ * Repository
+ *      UrlShortener - https://github.com/pBouillon/UrlShortener
+ *
+ * License
+ *      MIT - https://github.com/pBouillon/UrlShortener/blob/master/LICENSE
+ */
+
+namespace UrlShortener.Common.Constants.Swagger
 {
     /// <summary>
     /// References Swagger Tags used in the Swagger UI and for the endpoints qualification

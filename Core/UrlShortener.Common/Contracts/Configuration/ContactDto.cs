@@ -1,4 +1,15 @@
-﻿namespace UrlShortener.Common.Contracts.Configuration
+﻿/**
+ * Author
+ *      Pierre Bouillon - https://github.com/pBouillon
+ *
+ * Repository
+ *      UrlShortener - https://github.com/pBouillon/UrlShortener
+ *
+ * License
+ *      MIT - https://github.com/pBouillon/UrlShortener/blob/master/LICENSE
+ */
+
+namespace UrlShortener.Common.Contracts.Configuration
 {
     /// <summary>
     /// References Swagger contact header's data

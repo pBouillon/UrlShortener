@@ -1,4 +1,15 @@
-﻿using Moq;
+﻿/**
+ * Author
+ *      Pierre Bouillon - https://github.com/pBouillon
+ *
+ * Repository
+ *      UrlShortener - https://github.com/pBouillon/UrlShortener
+ *
+ * License
+ *      MIT - https://github.com/pBouillon/UrlShortener/blob/master/LICENSE
+ */
+
+using Moq;
 using UrlShortener.Service.Url.Interfaces;
 
 namespace UrlShortener.Tests.Mocks

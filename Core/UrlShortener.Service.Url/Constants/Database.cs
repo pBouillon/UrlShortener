@@ -1,4 +1,15 @@
-﻿namespace UrlShortener.Service.Url.Constants
+﻿/**
+ * Author
+ *      Pierre Bouillon - https://github.com/pBouillon
+ *
+ * Repository
+ *      UrlShortener - https://github.com/pBouillon/UrlShortener
+ *
+ * License
+ *      MIT - https://github.com/pBouillon/UrlShortener/blob/master/LICENSE
+ */
+
+namespace UrlShortener.Service.Url.Constants
 {
     /// <summary>
     /// References constants related to the database
@@ -26,7 +37,7 @@
         /// <summary>
         /// Database server port
         /// </summary>
-        public const int Port = 5433;
+        public const int Port = 5432;
 
         /// <summary>
         /// Database table name

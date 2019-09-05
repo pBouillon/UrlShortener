@@ -1,4 +1,15 @@
-﻿namespace UrlShortener.Common.Constants.Url
+﻿/**
+ * Author
+ *      Pierre Bouillon - https://github.com/pBouillon
+ *
+ * Repository
+ *      UrlShortener - https://github.com/pBouillon/UrlShortener
+ *
+ * License
+ *      MIT - https://github.com/pBouillon/UrlShortener/blob/master/LICENSE
+ */
+
+namespace UrlShortener.Common.Constants.Url
 {
     /// <summary>
     /// References custom exception messages
