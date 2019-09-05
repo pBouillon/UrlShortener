@@ -24,6 +24,6 @@ namespace UrlShortener.Common.Constants.Routes
         /// <summary>
         /// Endpoint for the controller converting shot urls to long ones
         /// </summary>
-        public const string ShortToLong = "url/long";
+        public const string ShortToLong = "url/short";
     }
 }
