@@ -2,19 +2,30 @@
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 using System.Net.Http;
+using UrlShortener.Common.Constants.Routes;
+using UrlShortener.Common.Constants.Swagger;
 using UrlShortener.Common.Contracts.Url;
-using UrlShortener.Common.Enums.Swagger;
 using UrlShortener.Service.Url.Interfaces;
 
 namespace UrlShortener.Api.Controllers
 {
-    [Route("url/long")]
+    /// <summary>
+    /// References the controller used for the conversion of long URL to short ones
+    /// </summary>
+    [Route(Routes.LongToShort)]
     [ApiController]
     [Produces("application/json")]
     public class LongUrlController : ControllerBase
     {
+        /// <summary>
+        /// Url service used for URL conversions
+        /// </summary>
         private readonly IUrlService _urlService;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="urlService">Url service used for URL conversions</param>
         public LongUrlController(IUrlService urlService)
         {
             _urlService = urlService;
@@ -39,20 +50,19 @@ namespace UrlShortener.Api.Controllers
             ] string longUrl)
         {
             UrlDto shortenUrl;
+
+            // Fetch the non-formatted url
             longUrl = WebUtility.UrlDecode(longUrl);
 
             try
             {
                 shortenUrl = _urlService.GetShortUrlFor(longUrl);
             }
+            // Any error occuring would result in an error 400
             catch (HttpRequestException e)
             {
                 return BadRequest(e.Message);
             }
-
-            // TODO: find the correct way to do this (no hard coding)
-            shortenUrl.ShortUrl = $"http://{HttpContext.Request.Host.Value}/" +
-                $"url/long/{shortenUrl.ShortUrl}";
 
             return Ok(shortenUrl);
         }
